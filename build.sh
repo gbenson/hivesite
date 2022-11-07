@@ -9,8 +9,25 @@ if [ $# != 1 ]; then
 fi
 builddir="$1"
 
+try_download ()
+{
+  if basename "$1" | grep -q '^mediawiki-.*\.tar\..*$'; then
+    url='https://releases.wikimedia.org/mediawiki'
+    url="$url/$(basename "$1" \
+	          | sed 's/^mediawiki-\([^.]*\.[^.]*\).*\.tar\.[^.]*$/\1/')"
+    url="$url/$(basename "$1")"
+  else
+    return 0
+  fi
+  mkdir -p $(dirname "$1")
+  echo 1>&2 "$url:"
+  curl -o "$1" $url
+}
+
 ensure_exists ()
 {
+  test -r "$1" && return 0
+  try_download "$1"
   test -r "$1" && return 0
   echo 1>&2 "error: $1: file not found"
   exit 1
