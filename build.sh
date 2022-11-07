@@ -50,6 +50,7 @@ extract_into ()
 topdir=$(cd $(dirname "$0") && pwd)
 srcdir="$topdir/source"
 builddir="$topdir/build"
+configdir="$HOME/.hivesite"
 
 # Extract the main tarball.
 srctar="$srcdir/mediawiki-1.35.2.tar.gz"
@@ -72,6 +73,9 @@ ensure_exists "$extdir/TemplateStyles/vendor/autoload.php"
 skindir="$builddir/skins"
 extract_into "$skindir" \
     MinervaNeue-REL1_35-d82e32c
+
+# Drop in our configuration.
+rsync -a "$configdir"/ "$builddir"
 
 # Remove any .gitignore files that got dropped in.
 find "$builddir" -name .gitignore -print0 | xargs -0 rm -f
