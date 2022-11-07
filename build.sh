@@ -3,8 +3,8 @@
 
 set -e
 
-if [ $# != 1 ]; then
-    echo 1>&2 "usage: $0 BUILDDIR"
+if [ $# != 0 ]; then
+    echo 1>&2 "usage: $0"
     exit 1
 fi
 builddir="$1"
@@ -49,11 +49,13 @@ extract_into ()
 
 topdir=$(cd $(dirname "$0") && pwd)
 srcdir="$topdir/source"
+builddir="$topdir/build"
 
 # Extract the main tarball.
 srctar="$srcdir/mediawiki-1.35.2.tar.gz"
 ensure_exists "$srctar"
 git clean -fdxq "$builddir"
+mkdir -p "$builddir"
 tar -xf "$srctar" -C "$builddir" --strip-components=1
 ensure_exists "$builddir/README.md"
 
