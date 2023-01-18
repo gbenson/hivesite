@@ -52,6 +52,7 @@ clean_builddir ()
   for i in "$builddir"/.[^.]* "$builddir"/*; do
     case "$i" in
       "$builddir"/.git*) ;;
+      "$builddir"/.htaccess) ;;
       "$builddir"/LocalSettings*.php) ;;
       *) rm -rf "$i"
     esac
@@ -89,9 +90,6 @@ ensure_exists "$extdir/TemplateStyles/vendor/autoload.php"
 skindir="$builddir/skins"
 extract_into "$skindir" \
     MinervaNeue-REL1_35-d82e32c
-
-# Drop in our configuration.
-rsync -a "$configdir"/ "$builddir"
 
 # Remove any .gitignore files that got dropped in.
 find "$extdir" "$skindir" -name .gitignore -print0 | xargs -0 rm -f
