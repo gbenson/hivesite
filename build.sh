@@ -46,16 +46,33 @@ extract_into ()
   done
 }
 
+clean_builddir ()
+{
+  builddir="$1"
+  for i in "$builddir"/.[^.]* "$builddir"/*; do
+    case "$i" in
+      "$builddir"/.git*) ;;
+      "$builddir"/LocalSettings*.php) ;;
+      *) rm -rf "$i"
+    esac
+  done
+}
+
 topdir=$(cd $(dirname "$0") && pwd)
 srcdir="$topdir/source"
 builddir="$topdir/build"
 configdir="$HOME/.hivesite"
 
+# Create the deployment directory to build into.
+if [ ! -d "$builddir" ]; then
+  read -p "Whats the git remote for $builddir? " remote
+  git clone "$remote" "$builddir"
+fi
+
 # Extract the main tarball.
 srctar="$srcdir/mediawiki-1.35.2.tar.gz"
 ensure_exists "$srctar"
-git clean -fdxq "$builddir"
-mkdir -p "$builddir"
+clean_builddir "$builddir"
 tar -xf "$srctar" -C "$builddir" --strip-components=1
 ensure_exists "$builddir/README.md"
 
@@ -77,4 +94,4 @@ extract_into "$skindir" \
 rsync -a "$configdir"/ "$builddir"
 
 # Remove any .gitignore files that got dropped in.
-find "$builddir" -name .gitignore -print0 | xargs -0 rm -f
+find "$extdir" "$skindir" -name .gitignore -print0 | xargs -0 rm -f
