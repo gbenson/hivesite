@@ -62,7 +62,6 @@ clean_builddir ()
 topdir=$(cd $(dirname "$0") && pwd)
 srcdir="$topdir/source"
 builddir="$topdir/build"
-configdir="$HOME/.hivesite"
 
 # Create the deployment directory to build into.
 if [ ! -d "$builddir" ]; then
