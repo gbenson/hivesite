@@ -36,6 +36,12 @@ directory.  Run the following script to create those files::
 
   ./init-database
 
+To force a database reinitialization, do::
+
+  docker compose down
+  docker volume rm hivesite_database
+  docker compose up
+
 See the comments in ``init-database`` if you need to create a fresh
 backup to initialize from.
 
