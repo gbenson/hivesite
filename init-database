@@ -1,0 +1,43 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# != 0 ]; then
+  echo 1>&2 "usage: $0"
+  exit 1
+fi
+
+topdir=$(cd $(dirname "$0") && pwd)
+dstdir="$topdir/database"
+
+[ -d "$dstdir" ] || mkdir -p "$dstdir"
+
+# Extract the required database settings from LocalSettings.php.
+envfile="$dstdir/settings.env"
+cat <<EOF | docker run --rm -i gbenson/mediawiki php > "$envfile"
+<?php
+$(grep '^\$wgDB' $topdir/staging/LocalSettings.php)
+echo "MYSQL_DATABASE=\"\$wgDBname\"\n";
+echo "MYSQL_USER=\"\$wgDBuser\"\n";
+echo "MYSQL_PASSWORD=\"\$wgDBpassword\"\n";
+?>
+EOF
+
+# Create SQL to grant the required privileges.
+. "$envfile"
+cat <<EOF > "$dstdir"/grants.sql
+GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.*
+TO '$MYSQL_USER'@'web' IDENTIFIED BY '$MYSQL_PASSWORD';
+EOF
+
+# Grab a database backup to bootstrap from.
+# N.B. these are created by
+#  mysqldump --opt --no-tablespaces
+#    --host=${MYSQL_HOSTNAME}
+#    --user=${MYSQL_USERNAME} -p
+#    --databases ${MYSQL_DATABASE_NAME} > backup.sql
+# You should uncomment the $wgReadOnly line in LocalSettings.php
+# while the backup runs.
+bootstrap="$dstdir/data.sql.xz"
+rsync -a hivesite:bak/$MYSQL_DATABASE-20230428.sql.xz "$bootstrap"
+chmod 644 "$bootstrap"

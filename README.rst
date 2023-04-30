@@ -27,6 +27,19 @@ The ``staging`` subdirectory now contains a local copy of what's on
 the live site.
 
 
+Database setup
+--------------
+
+The first time the database container starts it will create a local
+copy of the live site's database using files in the ``database``
+directory.  Run the following script to create those files::
+
+  ./init-database
+
+See the comments in ``init-database`` if you need to create a fresh
+backup to initialize from.
+
+
 Updating the the site
 ---------------------
 
