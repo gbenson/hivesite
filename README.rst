@@ -3,6 +3,7 @@ Hive
 
 How to operate the website known as Hive.
 
+
 Initial setup
 -------------
 
@@ -30,13 +31,19 @@ Updating the the site
 ---------------------
 
 The ``sources`` directory contains the tarballs that were used to
-build the ``staging`` directory.  To update the site:
+build the ``gbenson/mediawiki`` container image.  After testing, the
+container's document root is extracted into the ``staging`` directory
+and then deployed to the live site using git.  To update the site:
 
 1. Download any new files you need into ``sources``.
-2. Edit ``push-to-staging`` with any changes you need.
-3. Run ``./push-to-staging`` to rebuild everything in ``staging``.
-4. ``cd`` into ``staging``, use ``git diff`` to make sure everything's
+2. Edit ``Dockerfile`` with any changes you need.
+3. Either build the container image locally
+   (``docker build --tag=gbenson/mediawiki .``), or just push a
+   ``vX.Y.Z-R`` tag to GitHub and let the CI workflow build the
+   image and push it to Docker Hub.
+4. Run ``./push-to-staging`` to copy everything into ``staging``.
+5. ``cd`` into ``staging``, use ``git diff`` to make sure everything's
    as you want it.  Go back and make changes if necessary.
-5. Commit your changes, then ``git push`` them.  The ``post-receive``
+6. Commit your changes, then ``git push`` them.  The ``post-receive``
    hook on the other end will deploy what you've pushed.
-6. ``cd`` out of ``staging``, and commit your changes there.
+7. ``cd`` out of ``staging``, and commit your changes there.
