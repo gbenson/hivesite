@@ -8,8 +8,9 @@ services:
     ports:
       - 8888:80
     volumes:
-      - ./staging:/var/www/html
-      - images:/var/www/html/images
+      - ./webserver/home:/home
+      - ./webserver/html:/var/www/html
+      - ./staging:/var/www/html/w
 
   database:
     image: mariadb
@@ -23,4 +24,3 @@ services:
 
 volumes:
   database:
-  images:
