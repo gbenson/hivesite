@@ -27,7 +27,7 @@ EOF
 . "$envfile"
 cat <<EOF > "$dstdir"/grants.sql
 GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.*
-TO '$MYSQL_USER'@'web' IDENTIFIED BY '$MYSQL_PASSWORD';
+TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
 EOF
 
 # Grab a database backup to bootstrap from.
