@@ -5,6 +5,8 @@ services:
     image: gbenson/mediawiki
     links:
       - database
+    ports:
+      - 8888:80
     volumes:
       - ./staging:/var/www/html
       - images:/var/www/html/images
