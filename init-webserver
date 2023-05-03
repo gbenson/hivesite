@@ -1,0 +1,49 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# != 0 ]; then
+  echo 1>&2 "usage: $0"
+  exit 1
+fi
+
+topdir=$(cd $(dirname "$0") && pwd)
+dstdir="$topdir/webserver"
+
+# Extract the required settings from LocalSettings.php.
+envfile=$(mktemp)
+cat <<EOF | docker run --rm -i gbenson/mediawiki php > "$envfile"
+<?php
+$(grep '\$wgServer.*https' $topdir/staging/LocalSettings.php)
+\$sitesubdir = explode('://', \$wgServer)[1];
+echo "sitesubdir=\"\$sitesubdir\"\n";
+$(grep '^\$gbArticlePath' $topdir/staging/LocalSettings.php)
+echo "wikisubdir=\"\$gbArticlePath\"\n";
+?>
+EOF
+. "$envfile"
+rm -f "$envfile"
+
+# Fetch the static files we need from the live site.
+sitedir="$dstdir/html"
+wikidir="$sitedir$wikisubdir"
+logosubdir="images/thumb/8/89"
+logodir="$wikidir/$logosubdir"
+
+[ -d "$logodir" ] || mkdir -p "$logodir"
+
+rsync -a "hivesite:$sitesubdir/.htaccess" "$sitedir"
+rsync -a \
+      --exclude '/images/' \
+      "hivesite:$sitesubdir$wikisubdir/" "$wikidir"
+rsync -a \
+      --exclude '/*.jpg' \
+      "hivesite:$sitesubdir$wikisubdir/$logosubdir/" "$logodir"
+
+homefile=$(grep /home/ "$wikidir/.htaccess" | sed 's,^.*/home/,home/,')
+homesubdir=$(dirname "$homefile")
+homedir="$dstdir/$homesubdir"
+
+[ -d "$homedir" ] || mkdir -p "$homedir"
+
+rsync -av "hivesite:/$homefile" "$homedir"

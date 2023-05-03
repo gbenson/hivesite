@@ -46,6 +46,15 @@ See the comments in ``init-database`` if you need to create a fresh
 backup to initialize from.
 
 
+Webserver setup
+---------------
+
+Some files need fetching from the live site.  Run the following script
+to fetch them::
+
+  ./init-webserver
+
+
 Updating the the site
 ---------------------
 
