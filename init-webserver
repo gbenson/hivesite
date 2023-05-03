@@ -33,6 +33,7 @@ logodir="$wikidir/$logosubdir"
 [ -d "$logodir" ] || mkdir -p "$logodir"
 
 rsync -a "hivesite:$sitesubdir/.htaccess" "$sitedir"
+sed -i 's/^\(Rewrite.*https.*\)/#\1/i' "$sitedir/.htaccess"
 rsync -a \
       --exclude '/images/' \
       "hivesite:$sitesubdir$wikisubdir/" "$wikidir"
