@@ -67,7 +67,7 @@ and then deployed to the live site using git.  To update the site:
 2. Edit ``Dockerfile`` with any changes you need.
 3. Either build the container image locally
    (``docker build --tag=gbenson/mediawiki .``), or just push a
-   ``vX.Y.Z-R`` tag to GitHub and let the CI workflow build the
+   ``X.Y.Z-R`` tag to GitHub and let the CI workflow build the
    image and push it to Docker Hub.
 4. Run ``./push-to-staging`` to copy everything into ``staging``.
 5. ``cd`` into ``staging``, use ``git diff`` to make sure everything's
