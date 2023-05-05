@@ -29,3 +29,4 @@ srcimg=gbenson/mediawiki
 docker pull "$srcimg"
 clean_builddir "$builddir"
 docker run --rm -i "$srcimg" tar -cf - . | tar -xf - -C "$builddir"
+chmod og+w "$builddir/cache"
