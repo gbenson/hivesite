@@ -1,4 +1,4 @@
-FROM mediawiki:1.35.2
+FROM mediawiki:1.35.10
 
 ARG GITHUB_SERVER_URL=https://github.com
 ARG GITHUB_REPOSITORY=gbenson/hivesite
