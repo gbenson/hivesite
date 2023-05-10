@@ -14,7 +14,7 @@ dstdir="$topdir/database"
 
 # Extract the required database settings from LocalSettings.php.
 envfile="$dstdir/settings.env"
-cat <<EOF | docker run --rm -i gbenson/mediawiki php > "$envfile"
+cat <<EOF | docker run --rm -i gbenson/mediawiki:1.35.2 php > "$envfile"
 <?php
 $(grep '^\$wgDB' $topdir/staging/LocalSettings.php)
 echo "MYSQL_DATABASE=\"\$wgDBname\"\n";

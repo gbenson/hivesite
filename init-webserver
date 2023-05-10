@@ -12,7 +12,7 @@ dstdir="$topdir/webserver"
 
 # Extract the required settings from LocalSettings.php.
 envfile=$(mktemp)
-cat <<EOF | docker run --rm -i gbenson/mediawiki php > "$envfile"
+cat <<EOF | docker run --rm -i gbenson/mediawiki:1.35.2 php > "$envfile"
 <?php
 $(grep '\$wgServer.*https' $topdir/staging/LocalSettings.php)
 \$sitesubdir = explode('://', \$wgServer)[1];
